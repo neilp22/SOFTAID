@@ -1,0 +1,81 @@
+@startuml
+skinparam backgroundColor #f9f9f9
+skinparam class {
+    BackgroundColor Lightblue 
+    ArrowColor DeepSkyBlue
+    BorderColor Black
+    FontColor Black
+}
+skinparam stereotypeCBackgroundColor LightSkyBlue
+skinparam stereotypeCFontColor Black
+skinparam roundCorner 15
+
+class Usuari {
+    +idUsuari : String
+    +dataAlta : Data
+}
+
+class XarxaSocial {
+    +idXarxa : String
+    +nomXarxa : String
+    +dataCreació : Data
+    +numIntegrants : int
+}
+
+class Integrant {
+    +nom : String
+    +dni : String
+    +telefons : List<String>
+}
+
+class Familiar {
+    +grauParentiu : String
+    +genere : String
+    +dataNaixement : Data
+}
+
+class Amic {
+    +adreça : String
+    +genere : String
+    +dataNaixement : Data
+    +aficions : List<String>
+}
+
+class ProfessionalSanitari {
+    +tipus : String
+    +institucióReferència : String
+    +telèfon : String
+}
+
+class Metge {
+    +numCol·legiat : String
+    +especialitat : String
+}
+
+class Infermer {
+    +assistènciaDomicili : Boolean
+}
+
+class Visita {
+    +dataVisita : Data
+    +tipusVisita : String
+    +prescripcions : List<String>
+}
+
+class Data {
+    +dia : int
+    +mes : String(3)
+    +any : int
+    +zonaHoraria : String
+}
+
+Usuari "1" --> "n" XarxaSocial
+XarxaSocial "1" --> "n" Integrant
+Integrant <|-- Familiar
+Integrant <|-- Amic
+Integrant <|-- ProfessionalSanitari
+ProfessionalSanitari <|-- Metge
+ProfessionalSanitari <|-- Infermer
+Usuari "1" --> "n" Visita
+ProfessionalSanitari "1" --> "n" Visita
+@enduml
