@@ -1,0 +1,98 @@
+@startuml
+skinparam backgroundColor #f9f9f9
+skinparam class {
+    BackgroundColor Lightblue 
+    ArrowColor DeepSkyBlue
+    BorderColor Black
+    FontColor Black
+}
+skinparam stereotypeCBackgroundColor LightSkyBlue
+skinparam stereotypeCFontColor Black
+skinparam roundCorner 15
+
+' Classes principals
+class Usuari {
+  + idUsuari: String <<PK>>
+  - nom: String
+}
+
+class ConstantVital {
+  + idConstant: String <<PK>>
+  - nom: String
+  + verificaLlindar(mesura: Mesura): Boolean
+}
+
+class DispositiuIoT {
+  + numeroSerie: String <<PK>>
+  - nom: String
+  - potencia: Float
+  - frequenciaMostreig: Integer
+  + prendreMostra(): Mesura
+}
+
+class Mesura {
+  + idMesura: String <<PK>>
+  - dataHora: DateTime
+  - valors: List<Float>
+  - unitats: String
+  - idUsuari: String <<FK>>
+  - idConstant: String <<FK>>
+}
+
+class Llindar {
+  + idLlindar: String <<PK>>
+  - nom: String
+  - nivellMinim: Float
+  - nivellMaxim: Float
+  - unitats: String
+  - idConstant: String <<FK>>
+}
+
+class Alerta {
+  + idAlerta: String <<PK>>
+  - tipus: Enum {ServeisUrgencia, PersonalMedic, Cuidador}
+  - nivellRisc: Enum {Alt, Mitja, Baix}
+  - telefonContacte: String
+  - idUsuari: String <<FK>>
+  - idConstant: String <<FK>>
+  + generaMissatge(): String
+  + notificaContacte(): void
+}
+
+class ServeisUrgencia {
+  + idUrgencia: String <<PK>>
+  - necessitaAmbulancia: Boolean
+  - codiHistoriaClinica: String
+}
+
+class PersonalMedic {
+  + idPersonal: String <<PK>>
+  - clauAccesTemporal: String
+  - missatgeDescriptiu: String
+}
+
+class Cuidador {
+  + idCuidador: String <<PK>>
+  - missatgeInstruccions: String
+}
+
+' Relacions clares i etiquetes
+ConstantVital "1" --> "0..*" DispositiuIoT : "Monitoritza"
+ConstantVital "1" --> "0..*" Mesura : "Té mesures"
+ConstantVital "1" --> "0..*" Llindar : "Assignat a"
+ConstantVital "1" --> "0..*" Alerta : "Genera alertes"
+
+Mesura "1" --> "1" Usuari : "Pertany a"
+Mesura "1" --> "1" ConstantVital : "Mesura de"
+
+Alerta "1" --> "1" Usuari : "Pertany a"
+Alerta "1" --> "1" ConstantVital : "Relacionada amb"
+
+Alerta "1" --> "0..1" ServeisUrgencia : "Tipus d'alerta"
+Alerta "1" --> "0..1" PersonalMedic : "Tipus d'alerta"
+Alerta "1" --> "0..1" Cuidador : "Tipus d'alerta"
+
+ServeisUrgencia --> Usuari : "Relació amb"
+PersonalMedic --> Usuari : "Relació amb"
+Cuidador --> Usuari : "Relació amb"
+@enduml
